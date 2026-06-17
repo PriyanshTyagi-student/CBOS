@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Book OS | Project_03 Reimagined</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Boot Sequence -->
+    <div id="boot-screen">
+        <div class="boot-content">
+            <h1 class="glitch" data-text="INITIALIZING SYSTEM...">INITIALIZING SYSTEM...</h1>
+            <div class="progress-bar"><div class="progress-fill" id="boot-fill"></div></div>
+            <div class="boot-logs" id="boot-logs"></div>
+        </div>
+    </div>
+
+    <!-- Main OS Wrapper -->
+    <div id="os-wrapper" class="hidden">
+        
+        <!-- Sidebar / HUD Navigation -->
+        <nav id="hud-sidebar" class="glass-panel">
+            <div class="sidebar-header">
+                <h2>C.B.O.S</h2>
+                <div class="status-indicator">
+                    <span class="pulse-dot"></span>
+                    <span>SYS_ONLINE</span>
+                </div>
+            </div>
+            <ul class="nav-links">
+                <li class="nav-item active" data-view="dashboard">
+                    <span class="icon">⊞</span> Dashboard
+                </li>
+                <li class="nav-item" data-view="directory">
+                    <span class="icon">≡</span> Directory
+                </li>
+                <li class="nav-item" data-view="create">
+                    <span class="icon">+</span> Add Entity
+                </li>
+                <li class="nav-item" data-view="categories">
+                    <span class="icon">◈</span> Categories
+                </li>
+                <li class="nav-item" data-view="visualizer">
+                    <span class="icon">⎈</span> Visualizer
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <button id="legacy-mode-btn" class="cyber-btn terminal-btn">LEGACY TERMINAL</button>
+                <div class="project-info-link nav-item" data-view="story">View Architecture</div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main id="main-content">
+            <!-- Top Bar -->
+            <header class="top-bar glass-panel">
+                <div class="global-search">
+                    <span class="search-icon">⚲</span>
+                    <input type="text" id="global-search-input" placeholder="Query entities...">
+                </div>
+                <div class="user-profile">
+                    <span>ADMIN</span>
+                </div>
+            </header>
+
+            <div id="views-container">
+                <!-- VIEW: Dashboard -->
+                <section id="view-dashboard" class="view active">
+                    <div class="view-header">
+                        <h2>Intelligence Dashboard</h2>
+                        <p class="subtitle">System Overview & Metrics</p>
+                    </div>
+                    <div class="dashboard-grid">
+                        <div class="metric-card glass-panel">
+                            <div class="metric-value" id="metric-total">0</div>
+                            <div class="metric-label">TOTAL CONTACTS</div>
+                        </div>
+                        <div class="metric-card glass-panel">
+                            <div class="metric-value" id="metric-categories">0</div>
+                            <div class="metric-label">CATEGORIES</div>
+                        </div>
+                        <div class="metric-card glass-panel">
+                            <div class="metric-value" id="metric-recent">0</div>
+                            <div class="metric-label">NEWLY ACQUIRED</div>
+                        </div>
+                    </div>
+                    <div class="dashboard-recent glass-panel mt-4">
+                        <h3>RECENT ACQUISITIONS</h3>
+                        <div id="recent-list" class="contact-list">
+                            <!-- Populated via JS -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW: Directory -->
+                <section id="view-directory" class="view hidden">
+                    <div class="view-header flex-between">
+                        <div>
+                            <h2>Master Directory</h2>
+                            <p class="subtitle">All System Entities</p>
+                        </div>
+                        <div class="filters">
+                            <select id="category-filter" class="cyber-select">
+                                <option value="all">ALL CATEGORIES</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="directory-container glass-panel mt-4">
+                        <table class="data-table" id="directory-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>NAME</th>
+                                    <th>MOBILE</th>
+                                    <th>CATEGORY</th>
+                                    <th>ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="directory-body">
+                                <!-- Populated via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- VIEW: Create Contact -->
+                <section id="view-create" class="view hidden">
+                    <div class="view-header">
+                        <h2>Entity Acquisition</h2>
+                        <p class="subtitle">Secure Onboarding Sequence</p>
+                    </div>
+                    <div class="creation-container glass-panel mt-4">
+                        <form id="create-form">
+                            <input type="hidden" id="form-contact-id">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>DESIGNATION (NAME)</label>
+                                    <input type="text" id="form-name" required class="cyber-input" placeholder="Enter full name">
+                                </div>
+                                <div class="form-group">
+                                    <label>COMMLINK (MOBILE)</label>
+                                    <input type="tel" id="form-mobile" required class="cyber-input" placeholder="10-digit number" pattern="\d{10}">
+                                </div>
+                                <div class="form-group">
+                                    <label>NETWORK ID (EMAIL)</label>
+                                    <input type="email" id="form-email" class="cyber-input" placeholder="Optional email address">
+                                </div>
+                                <div class="form-group">
+                                    <label>LOCATION (ADDRESS)</label>
+                                    <input type="text" id="form-address" class="cyber-input" placeholder="Physical location">
+                                </div>
+                                <div class="form-group full-width">
+                                    <label>CLASSIFICATION (CATEGORY)</label>
+                                    <select id="form-category" class="cyber-select">
+                                        <option value="none">UNCLASSIFIED</option>
+                                        <!-- Populated via JS -->
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="cyber-btn primary mt-4 w-full">INITIALIZE ENTITY</button>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- VIEW: Categories -->
+                <section id="view-categories" class="view hidden">
+                    <div class="view-header">
+                        <h2>Classification Protocols</h2>
+                        <p class="subtitle">Manage Categories</p>
+                    </div>
+                    <div class="categories-layout mt-4">
+                        <div class="add-category glass-panel">
+                            <h3>NEW PROTOCOL</h3>
+                            <div class="form-group mt-4">
+                                <input type="text" id="new-category-name" class="cyber-input" placeholder="Category Name">
+                                <button id="btn-add-category" class="cyber-btn primary mt-4 w-full">ADD</button>
+                            </div>
+                        </div>
+                        <div class="category-list glass-panel" id="category-list-container">
+                            <h3>ACTIVE PROTOCOLS</h3>
+                            <ul id="active-categories-list" class="cyber-list mt-4">
+                                <!-- Populated via JS -->
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW: Visualizer -->
+                <section id="view-visualizer" class="view hidden">
+                    <div class="view-header">
+                        <h2>Network Topography</h2>
+                        <p class="subtitle">Entity Relationships</p>
+                    </div>
+                    <div class="visualizer-container glass-panel mt-4" id="visualizer-canvas">
+                        <!-- Populated via JS -->
+                    </div>
+                </section>
+
+                <!-- VIEW: Story & Architecture -->
+                <section id="view-story" class="view hidden">
+                    <div class="view-header">
+                        <h2>Project Archives</h2>
+                        <p class="subtitle">Origin & Architecture</p>
+                    </div>
+                    <div class="story-grid mt-4">
+                        <div class="story-card glass-panel">
+                            <h3>ORIGIN: CLASS 12</h3>
+                            <p class="mt-2">This system originated as a terminal-based Python script interacting with a local MySQL database. It was my very first software project, introducing me to CRUD operations, SQL, and database design.</p>
+                            <div class="tech-tags mt-4">
+                                <span class="tag">Python</span>
+                                <span class="tag">MySQL</span>
+                                <span class="tag">Terminal</span>
+                            </div>
+                        </div>
+                        <div class="story-card glass-panel">
+                            <h3>LEGACY ARCHITECTURE</h3>
+                            <pre class="mono-text mt-2">
+USER
+  ↓
+CLI INTERFACE (Python input)
+  ↓
+APPLICATION LOGIC (CRUD Functions)
+  ↓
+MySQL CONNECTOR (SQL Queries)
+  ↓
+LOCAL DB
+                            </pre>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Viewer Modal -->
+    <div id="contact-viewer" class="glass-modal hidden">
+        <div class="modal-content glass-panel">
+            <button class="close-modal" id="close-viewer">×</button>
+            <div class="viewer-layout">
+                <div class="viewer-profile">
+                    <div class="avatar-placeholder"></div>
+                    <h2 id="viewer-name">NAME</h2>
+                    <p id="viewer-id" class="mono-text text-accent">ID: --</p>
+                </div>
+                <div class="viewer-details">
+                    <div class="detail-row">
+                        <span class="label">MOBILE</span>
+                        <span class="value mono-text" id="viewer-mobile">--</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">EMAIL</span>
+                        <span class="value mono-text" id="viewer-email">--</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">ADDRESS</span>
+                        <span class="value" id="viewer-address">--</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">CATEGORY</span>
+                        <span class="value tag" id="viewer-category">--</span>
+                    </div>
+                    <div class="quick-actions mt-4">
+                        <button class="cyber-btn primary" id="btn-edit-contact">EDIT</button>
+                        <button class="cyber-btn danger" id="btn-delete-contact">DELETE</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Legacy Terminal Overlay -->
+    <div id="legacy-terminal" class="hidden">
+        <div class="terminal-window">
+            <div class="terminal-header flex-between">
+                <span>C:\Windows\system32\cmd.exe - python contact_book.py</span>
+                <button id="close-terminal" class="close-btn">×</button>
+            </div>
+            <div class="terminal-body" id="terminal-output">
+                <!-- Text outputs go here -->
+            </div>
+            <div class="terminal-input-line">
+                <span id="terminal-prompt">> </span>
+                <input type="text" id="terminal-input" autocomplete="off" spellcheck="false" autofocus>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
